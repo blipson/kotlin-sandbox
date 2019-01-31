@@ -35,5 +35,19 @@ class MainTest {
                         "$id, " +
                         "name=$name]")
     }
+
+    @Test
+    fun testExtraListStuff() {
+        val x = listOf("one", "two", "three")
+        val y = x[4]
+        println(y)
+    }
+
+
+    fun returnIf(): Boolean {
+        val x = true
+        val y = "hi"
+        return (x && if (y != "hey") { true } else { false })
+    }
 }
 
