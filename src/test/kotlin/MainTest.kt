@@ -1,5 +1,4 @@
 import org.junit.Test
-import java.math.BigInteger
 import java.net.URLEncoder
 
 class MainTest {
@@ -9,7 +8,7 @@ class MainTest {
         val endList: List<Any> = lines.fold(listOf(0, listOf<Any>())) { acc, e ->
             listOf(
                     acc[0] as Int + 1,
-                    (acc[1] as List<Any>).plusElement(listOf(acc[0] as Int, e))
+                    (acc[1] as List<*>).plusElement(listOf(acc[0] as Int, e))
             )
         }
         println(endList)
@@ -34,20 +33,6 @@ class MainTest {
         println("${javaClass.name}:[" +
                         "$id, " +
                         "name=$name]")
-    }
-
-    @Test
-    fun testExtraListStuff() {
-        val x = listOf("one", "two", "three")
-        val y = x[4]
-        println(y)
-    }
-
-
-    fun returnIf(): Boolean {
-        val x = true
-        val y = "hi"
-        return (x && if (y != "hey") { true } else { false })
     }
 }
 
