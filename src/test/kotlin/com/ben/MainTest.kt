@@ -1,4 +1,6 @@
-import org.junit.Test
+package com.ben
+
+import org.junit.jupiter.api.Test
 import java.net.URLEncoder
 
 class MainTest {

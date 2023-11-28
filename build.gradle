@@ -1,23 +1,59 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.9.20'
-    id 'io.ktor.plugin' version '2.3.6'
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.20"
+    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.2.0"
+    id("io.micronaut.aot") version "4.2.0"
 }
 
-group "com.ben"
 version "0.0.1"
-mainClassName = "com.ben.MainKt"
-
-def isDevelopment = project.ext.has("development")
-applicationDefaultJvmArgs = ["-Dio.ktor.development=$isDevelopment"]
+group "com.ben"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "io.ktor:ktor-server-core-jvm"
-    implementation "io.ktor:ktor-server-netty-jvm"
-    implementation "ch.qos.logback:logback-classic:$logback_version"
-    testImplementation "io.ktor:ktor-server-tests-jvm"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    ksp("io.micronaut:micronaut-http-validation")
+    ksp("io.micronaut.serde:micronaut-serde-processor")
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    compileOnly("io.micronaut:micronaut-http-client")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+    testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+}
+
+application {
+    mainClass.set("com.ben.MainKt")
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("21")
+}
+
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("com.ben.*")
+    }
+    aot {
+        // Please review carefully the optimizations enabled below
+        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
+        optimizeServiceLoading = false
+        convertYamlToJava = false
+        precomputeOperations = true
+        cacheEnvironment = true
+        optimizeClassLoading = true
+        deduceEnvironment = true
+        optimizeNetty = true
+    }
 }
